@@ -22,12 +22,12 @@
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.9.26",
     "zustand": "^4.5.2",
-    "focura-shared": "workspace:*"
+    "focura-shared": "file:../shared",
+    "react-native-web": "~0.19.10",
+    "@expo/metro-runtime": "~3.2.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.4"
   }
 }
-
-
