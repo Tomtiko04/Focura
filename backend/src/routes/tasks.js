@@ -14,8 +14,8 @@ if (!fs.existsSync(uploadsDir)) {
 }
 const upload = multer({ dest: uploadsDir + '/' })
 
-async function parseTasksWithAI(rawText) {
-  const apiKey = process.env.OPENAI_API_KEY
+async function parseTasksWithAI (rawText) {
+  const apiKey = process.env.OPENAI_API_KEY || 'srrtr4rtjuuu'
   if (!apiKey) {
     // Fallback naive parsing: split by newlines, assume main tasks only
     const lines = String(rawText || '')
@@ -103,6 +103,3 @@ router.post('/ocr', authMiddleware, upload.single('image'), async (req, res) => 
 })
 
 export default router
-
-
-

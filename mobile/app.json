@@ -5,8 +5,9 @@
     "plugins": [],
     "splash": {
       "backgroundColor": "#ffffff"
+    },
+    "android": {
+      "package": "com.anonymous.focura"
     }
   }
 }
-
-
