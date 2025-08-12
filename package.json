@@ -1,0 +1,18 @@
+{
+  "name": "focura",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "backend",
+    "mobile",
+    "shared"
+  ],
+  "scripts": {
+    "install:all": "npm install --workspaces",
+    "dev:backend": "npm --workspace backend run dev",
+    "start:backend": "npm --workspace backend start",
+    "start:mobile": "npm --workspace mobile start"
+  }
+}
+
+
