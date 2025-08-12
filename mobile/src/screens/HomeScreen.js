@@ -4,7 +4,7 @@ import useAuthStore from '../store/authStore';
 import { api } from '../api/client';
 import { API_ROUTES } from 'focura-shared';
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const { token, user, logout } = useAuthStore();
 
   const testProtected = async () => {
@@ -21,6 +21,12 @@ export default function HomeScreen() {
       <Text style={styles.title}>Welcome, {user?.name || user?.email}</Text>
       <View style={{ height: 12 }} />
       <Button title="Test Protected Endpoint" onPress={testProtected} />
+      <View style={{ height: 12 }} />
+      <Button title="View Tasks" onPress={() => navigation.navigate('Tasks')} />
+      <View style={{ height: 12 }} />
+      <Button title="Type Task" onPress={() => navigation.navigate('AddTypedTask')} />
+      <View style={{ height: 12 }} />
+      <Button title="Snap Task (OCR)" onPress={() => navigation.navigate('SnapTask')} />
       <View style={{ height: 12 }} />
       <Button title="Logout" onPress={logout} />
     </View>

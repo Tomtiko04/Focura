@@ -1,7 +1,11 @@
 {
   "expo": {
     "name": "Focura",
-    "slug": "focura"
+    "slug": "focura",
+    "plugins": [],
+    "splash": {
+      "backgroundColor": "#ffffff"
+    }
   }
 }
 

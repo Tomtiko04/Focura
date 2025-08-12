@@ -5,6 +5,11 @@ export const API_ROUTES = {
     register: '/api/auth/register',
     login: '/api/auth/login',
     me: '/api/auth/me'
+  },
+  tasks: {
+    create: '/api/tasks/create',
+    list: '/api/tasks',
+    ocr: '/api/tasks/ocr'
   }
 };
 
