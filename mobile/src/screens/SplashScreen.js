@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Easing, Dimensions } from 'react-native';
 import styled, { ThemeProvider } from 'styled-components/native';
+import Svg, { Path } from 'react-native-svg';
 import useAuthStore from '../store/authStore';
 import { theme } from '../theme';
 
@@ -49,6 +50,20 @@ const Dot = styled(Animated.View)`
   margin: 0 4px;
   background-color: ${(p) => p.theme.colors.primary};
 `;
+
+const LogoRow = styled.View`
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+`;
+
+const LogoMark = ({ size = 36, color }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+    {/* Simple stylized check-in-focus mark for Focura */}
+    <Path d="M3 12a9 9 0 1 1 18 0 9 9 0 0 1-18 0Z" fill={color} opacity="0.18" />
+    <Path d="M8 12l3 3 5-7" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+  </Svg>
+);
 
 function FloatingBlob({ size, color, start, delta, duration }) {
   const translate = useRef(new Animated.Value(0)).current;
@@ -165,8 +180,8 @@ function SplashScreenContent({ navigation }) {
 
     // Navigate after a short showcase
     const t = setTimeout(() => {
-      navigation.replace(token ? 'Home' : 'Decide');
-    }, 2400);
+      navigation.replace(token ? 'Home' : 'Onboarding');
+    }, 4200);
 
     return () => {
       clearInterval(interval);
@@ -184,7 +199,12 @@ function SplashScreenContent({ navigation }) {
       </Layer>
 
       {/* Logo / Title */}
-      <Title style={{ transform: [{ scale: titleScale }], opacity: titleOpacity }}>Focura</Title>
+      <LogoRow>
+        <Animated.View style={{ transform: [{ scale: titleScale }], opacity: titleOpacity, marginRight: 8 }}>
+          <LogoMark color={theme.colors.primary} />
+        </Animated.View>
+        <Title style={{ transform: [{ scale: titleScale }], opacity: titleOpacity }}>Focura</Title>
+      </LogoRow>
 
       {/* Typing subtitle */}
       <SubtitleRow>
