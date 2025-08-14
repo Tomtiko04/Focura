@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { Alert, Button, Animated } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Alert, Button, Animated, TouchableOpacity } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import styled, { useTheme } from "styled-components/native";
 import { api } from "../api/client";
@@ -30,6 +30,22 @@ const Input = styled.TextInput`
 	border: 1px solid ${(props) => props.theme.colors.lightGray};
 `;
 
+const InputWrap = styled.View`
+	position: relative;
+`;
+
+const ToggleEye = styled(TouchableOpacity)`
+	position: absolute;
+	right: 12px;
+	top: 50%;
+	transform: translateY(-12px);
+	padding: 4px;
+`;
+
+const EyeText = styled.Text`
+	color: ${(p) => p.theme.colors.meta};
+`;
+
 const SwitchText = styled.Text`
 	color: ${(props) => props.theme.colors.primary};
 	text-align: center;
@@ -41,6 +57,7 @@ function LoginScreenContent({ navigation }) {
 	const setAuth = useAuthStore((s) => s.setAuth);
 	const token = useAuthStore((s) => s.token);
 	const theme = useTheme();
+	const [showPassword, setShowPassword] = useState(false);
 
 	// entrance animation
 	const intro = useRef(new Animated.Value(0)).current;
@@ -88,13 +105,18 @@ function LoginScreenContent({ navigation }) {
 				name="password"
 				rules={{ required: true, minLength: 6 }}
 				render={({ field: { onChange, value } }) => (
-					<Input
-						placeholder="Password"
-						secureTextEntry
-						value={value}
-						onChangeText={onChange}
-						placeholderTextColor={theme.colors.gray}
-					/>
+					<InputWrap>
+						<Input
+							placeholder="Password"
+							secureTextEntry={!showPassword}
+							value={value}
+							onChangeText={onChange}
+							placeholderTextColor={theme.colors.gray}
+						/>
+						<ToggleEye onPress={() => setShowPassword((v) => !v)} accessibilityLabel={showPassword ? 'Hide password' : 'Show password'}>
+							<EyeText>{showPassword ? 'Hide' : 'Show'}</EyeText>
+						</ToggleEye>
+					</InputWrap>
 				)}
 			/>
 			<Button title="Login" onPress={handleSubmit(onSubmit)} color={theme.colors.primary} />
