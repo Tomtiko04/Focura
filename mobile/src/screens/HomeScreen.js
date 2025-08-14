@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Button } from "react-native";
+import { Alert, ScrollView, View } from "react-native";
 import styled, { ThemeProvider } from 'styled-components/native';
 import useAuthStore from '../store/authStore';
 import { api } from '../api/client';
@@ -28,8 +28,36 @@ const WelcomeText = styled.Text`
   margin-bottom: ${(props) => props.theme.spacing.large};
 `;
 
-const ButtonContainer = styled.View`
-  margin-bottom: ${(props) => props.theme.spacing.medium};
+const StatsGrid = styled.View`
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+`;
+
+const StatCard = styled.View`
+  width: 48%;
+  background-color: ${(p) => p.theme.colors.white};
+  border-radius: ${(p) => p.theme.borderRadius};
+  padding: ${(p) => p.theme.spacing.medium};
+  margin-bottom: ${(p) => p.theme.spacing.medium};
+  border: 1px solid ${(p) => p.theme.colors.lightGray};
+`;
+
+const StatLabel = styled.Text`
+  color: ${(p) => p.theme.colors.gray};
+`;
+
+const StatValue = styled.Text`
+  font-size: ${(p) => p.theme.fontSizes.xlarge};
+  font-weight: bold;
+  color: ${(p) => p.theme.colors.text};
+`;
+
+const SectionTitle = styled.Text`
+  font-size: ${(p) => p.theme.fontSizes.large};
+  font-weight: bold;
+  margin-top: ${(p) => p.theme.spacing.large};
+  margin-bottom: ${(p) => p.theme.spacing.small};
 `;
 
 function HomeScreenContent({ navigation }) {
@@ -45,25 +73,38 @@ function HomeScreenContent({ navigation }) {
   };
 
   return (
-    <Container>
-      <Title>Focura</Title>
-      <WelcomeText>Welcome, {user?.name || user?.email}!</WelcomeText>
-      <ButtonContainer>
-        <Button title="Test Protected Endpoint" onPress={testProtected} color={theme.colors.primary} />
-      </ButtonContainer>
-      <ButtonContainer>
-        <Button title="View Tasks" onPress={() => navigation.navigate('Tasks')} color={theme.colors.primary} />
-      </ButtonContainer>
-      <ButtonContainer>
-        <Button title="Type Task" onPress={() => navigation.navigate('AddTypedTask')} color={theme.colors.primary} />
-      </ButtonContainer>
-      <ButtonContainer>
-        <Button title="Snap Task (OCR)" onPress={() => navigation.navigate('SnapTask')} color={theme.colors.primary} />
-      </ButtonContainer>
-      <ButtonContainer>
-        <Button title="Logout" onPress={logout} color={theme.colors.secondary} />
-      </ButtonContainer>
-    </Container>
+    <ThemeProvider theme={theme}>
+      <ScrollView contentContainerStyle={{ padding: 16 }}>
+        <Title>Dashboard</Title>
+        <WelcomeText>Welcome, {user?.name || user?.email}!</WelcomeText>
+
+        <StatsGrid>
+          <StatCard>
+            <StatLabel>Today</StatLabel>
+            <StatValue>4 tasks</StatValue>
+          </StatCard>
+          <StatCard>
+            <StatLabel>Completed</StatLabel>
+            <StatValue>12</StatValue>
+          </StatCard>
+          <StatCard>
+            <StatLabel>Upcoming</StatLabel>
+            <StatValue>5</StatValue>
+          </StatCard>
+          <StatCard>
+            <StatLabel>Subtasks</StatLabel>
+            <StatValue>18</StatValue>
+          </StatCard>
+        </StatsGrid>
+
+        <SectionTitle>Productivity</SectionTitle>
+        <View style={{ height: 160, backgroundColor: '#fff', borderRadius: 8, borderWidth: 1, borderColor: '#eee' }} />
+
+        <SectionTitle>Focus Score</SectionTitle>
+        <View style={{ height: 160, backgroundColor: '#fff', borderRadius: 8, borderWidth: 1, borderColor: '#eee' }} />
+
+      </ScrollView>
+    </ThemeProvider>
   );
 }
 
