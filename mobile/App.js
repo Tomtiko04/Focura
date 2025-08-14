@@ -11,6 +11,7 @@ import TasksScreen from './src/screens/TasksScreen';
 import AddTypedTaskScreen from './src/screens/AddTypedTaskScreen';
 import SnapTaskScreen from './src/screens/SnapTaskScreen';
 import useAuthStore from './src/store/authStore';
+import TabNavigator from './src/navigation/TabNavigator';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,10 +26,7 @@ export default function App() {
         <Stack.Screen name="Decide" component={DecideScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Tasks" component={TasksScreen} />
-        <Stack.Screen name="AddTypedTask" component={AddTypedTaskScreen} options={{ title: 'Type Task' }} />
-        <Stack.Screen name="SnapTask" component={SnapTaskScreen} options={{ title: 'Snap Task (OCR)' }} />
+        <Stack.Screen name="Home" component={TabNavigator} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
