@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'react-native';
+import { Alert, Button } from "react-native";
 import styled, { ThemeProvider } from 'styled-components/native';
 import useAuthStore from '../store/authStore';
 import { api } from '../api/client';

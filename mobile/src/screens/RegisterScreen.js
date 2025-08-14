@@ -45,6 +45,7 @@ function RegisterScreenContent({ navigation }) {
     try {
       const res = await api.post(API_ROUTES.auth.register, data);
       setAuth({ token: res.data.token, user: res.data.user });
+      navigation.replace('Home');
     } catch (err) {
       Alert.alert('Registration failed', err?.response?.data?.error || 'Please try again');
     }
