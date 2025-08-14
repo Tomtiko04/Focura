@@ -34,8 +34,8 @@ export const lightTheme = {
     primary: '#6C63FF',
     secondary: '#FF6584',
     tertiary: '#00C2A8',
-    accent: '#FFC857', // warm accent
-    quaternary: '#4ECDC4', // complementary teal
+    accent: '#FFC857',
+    quaternary: '#4ECDC4',
     background: '#F5F5F5',
     surface: '#FFFFFF',
     text: '#1F2937',
@@ -66,7 +66,58 @@ export const darkTheme = {
   },
 };
 
-export const getTheme = (scheme) => (scheme === 'dark' ? darkTheme : lightTheme);
+// Additional brand color themes (light surfaces, different brand hues)
+export const tealTheme = {
+  ...base,
+  colors: {
+    primary: '#0FB9B1',
+    secondary: '#2EC4B6',
+    tertiary: '#1B9AAA',
+    accent: '#F3A712',
+    quaternary: '#90E0EF',
+    background: '#F6FFFE',
+    surface: '#FFFFFF',
+    text: '#0F172A',
+    meta: '#64748B',
+    gray: '#94A3B8',
+    lightGray: '#E2E8F0',
+    error: '#EF4444',
+    success: '#10B981',
+  },
+};
 
-// Back-compat default export
+export const roseTheme = {
+  ...base,
+  colors: {
+    primary: '#E11D48',
+    secondary: '#F43F5E',
+    tertiary: '#FB7185',
+    accent: '#F59E0B',
+    quaternary: '#FDE68A',
+    background: '#FFF5F7',
+    surface: '#FFFFFF',
+    text: '#111827',
+    meta: '#6B7280',
+    gray: '#9CA3AF',
+    lightGray: '#E5E7EB',
+    error: '#DC2626',
+    success: '#16A34A',
+  },
+};
+
+export const getTheme = (keyOrScheme) => {
+  switch (keyOrScheme) {
+    case 'dark':
+      return darkTheme;
+    case 'teal':
+      return tealTheme;
+    case 'rose':
+      return roseTheme;
+    case 'light':
+    default:
+      return lightTheme;
+  }
+};
+
+// Back-compat default
 export const theme = lightTheme;

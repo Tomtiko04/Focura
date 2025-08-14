@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'react-native';
 import { ThemeProvider } from 'styled-components/native';
 import { getTheme } from './src/theme';
+import useThemeStore from './src/store/themeStore';
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import HomeScreen from './src/screens/HomeScreen';
@@ -21,13 +22,15 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   const token = useAuthStore((s) => s.token);
-  const scheme = useColorScheme();
-  const theme = getTheme(scheme);
+  const systemScheme = useColorScheme();
+  const selectedTheme = useThemeStore((s) => s.selectedTheme); // 'system' | 'light' | 'dark' | 'teal' | 'rose'
+  const effectiveKey = selectedTheme === 'system' ? (systemScheme || 'light') : selectedTheme;
+  const theme = getTheme(effectiveKey);
 
   return (
     <ThemeProvider theme={theme}>
       <NavigationContainer>
-        <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
+        <StatusBar style={effectiveKey === 'dark' ? 'light' : 'dark'} />
         <Stack.Navigator screenOptions={{ headerShown: true }} initialRouteName="Splash">
           <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Onboarding" component={OnboardingScreen} options={{ headerShown: false }} />
