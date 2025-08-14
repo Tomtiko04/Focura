@@ -1,11 +1,43 @@
 import React from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { Alert, Button } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
+import styled, { ThemeProvider } from 'styled-components/native';
 import { api } from '../api/client';
 import useAuthStore from '../store/authStore';
 import { API_ROUTES } from 'focura-shared';
+import { theme } from '../theme';
 
-export default function LoginScreen({ navigation }) {
+const Container = styled.View`
+  flex: 1;
+  justify-content: center;
+  padding: ${(props) => props.theme.spacing.large};
+  background-color: ${(props) => props.theme.colors.background};
+`;
+
+const Title = styled.Text`
+  font-size: ${(props) => props.theme.fontSizes.xlarge};
+  color: ${(props) => props.theme.colors.primary};
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: ${(props) => props.theme.spacing.large};
+`;
+
+const Input = styled.TextInput`
+  background-color: ${(props) => props.theme.colors.white};
+  border-radius: ${(props) => props.theme.borderRadius};
+  padding: ${(props) => props.theme.spacing.medium};
+  margin-bottom: ${(props) => props.theme.spacing.medium};
+  font-size: ${(props) => props.theme.fontSizes.medium};
+  border: 1px solid ${(props) => props.theme.colors.lightGray};
+`;
+
+const SwitchText = styled.Text`
+  color: ${(props) => props.theme.colors.primary};
+  text-align: center;
+  margin-top: ${(props) => props.theme.spacing.medium};
+`;
+
+function LoginScreenContent({ navigation }) {
   const { control, handleSubmit } = useForm({ defaultValues: { email: '', password: '' } });
   const setAuth = useAuthStore((s) => s.setAuth);
 
@@ -19,14 +51,20 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+    <Container>
+      <Title>Login</Title>
       <Controller
         control={control}
         name="email"
         rules={{ required: true }}
         render={({ field: { onChange, value } }) => (
-          <TextInput style={styles.input} placeholder="Email" keyboardType="email-address" value={value} onChangeText={onChange} />
+          <Input
+            placeholder="Email"
+            keyboardType="email-address"
+            value={value}
+            onChangeText={onChange}
+            placeholderTextColor={theme.colors.gray}
+          />
         )}
       />
       <Controller
@@ -34,20 +72,27 @@ export default function LoginScreen({ navigation }) {
         name="password"
         rules={{ required: true, minLength: 6 }}
         render={({ field: { onChange, value } }) => (
-          <TextInput style={styles.input} placeholder="Password" secureTextEntry value={value} onChangeText={onChange} />
+          <Input
+            placeholder="Password"
+            secureTextEntry
+            value={value}
+            onChangeText={onChange}
+            placeholderTextColor={theme.colors.gray}
+          />
         )}
       />
-      <Button title="Login" onPress={handleSubmit(onSubmit)} />
-      <View style={{ height: 12 }} />
-      <Button title="Go to Register" onPress={() => navigation.navigate('Register')} />
-    </View>
+      <Button title="Login" onPress={handleSubmit(onSubmit)} color={theme.colors.primary} />
+      <SwitchText onPress={() => navigation.navigate('Register')}>
+        Don't have an account? Register
+      </SwitchText>
+    </Container>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, justifyContent: 'center' },
-  title: { fontSize: 24, fontWeight: '600', marginBottom: 16, textAlign: 'center' },
-  input: { borderWidth: 1, borderColor: '#ccc', padding: 12, marginBottom: 12, borderRadius: 8 }
-});
-
-
+export default function LoginScreen({ navigation }) {
+  return (
+    <ThemeProvider theme={theme}>
+      <LoginScreenContent navigation={navigation} />
+    </ThemeProvider>
+  );
+}

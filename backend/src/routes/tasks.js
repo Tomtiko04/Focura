@@ -15,7 +15,7 @@ if (!fs.existsSync(uploadsDir)) {
 const upload = multer({ dest: uploadsDir + '/' })
 
 async function parseTasksWithAI (rawText) {
-  const apiKey = process.env.OPENAI_API_KEY || 'srrtr4rtjuuu'
+  const apiKey = process.env.OPENAI_API_KEY
   if (!apiKey) {
     // Fallback naive parsing: split by newlines, assume main tasks only
     const lines = String(rawText || '')

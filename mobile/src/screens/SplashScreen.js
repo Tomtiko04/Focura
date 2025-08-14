@@ -1,25 +1,44 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { ActivityIndicator } from 'react-native';
+import styled, { ThemeProvider } from 'styled-components/native';
+import useAuthStore from '../store/authStore';
+import { theme } from '../theme';
 
-export default function SplashScreen({ navigation, route }) {
+const Container = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  background-color: ${(props) => props.theme.colors.background};
+`;
+
+const Title = styled.Text`
+  font-size: 48px; /* Consider using theme.fontSizes.xlarge */
+  color: ${(props) => props.theme.colors.primary};
+  font-weight: bold;
+  margin-bottom: ${(props) => props.theme.spacing.large};
+`;
+
+function SplashScreenContent({ navigation }) {
+  const { token } = useAuthStore();
+
   useEffect(() => {
-    const t = setTimeout(() => {
-      navigation.replace('Decide');
-    }, 800);
-    return () => clearTimeout(t);
-  }, [navigation]);
+    setTimeout(() => {
+      navigation.replace(token ? 'Home' : 'Decide');
+    }, 2000);
+  }, [token, navigation]);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Focura</Text>
-      {/* <ActivityIndicator size="large" /> */}
-    </View>
+    <Container>
+      <Title>Focura</Title>
+      <ActivityIndicator size="large" color={theme.colors.primary} />
+    </Container>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  title: { fontSize: 36, fontWeight: '800', marginBottom: 16 }
-});
-
-
+export default function SplashScreen({ navigation }) {
+  return (
+    <ThemeProvider theme={theme}>
+      <SplashScreenContent navigation={navigation} />
+    </ThemeProvider>
+  );
+}

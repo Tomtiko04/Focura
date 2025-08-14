@@ -1,11 +1,43 @@
 import React from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { Alert, Button } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
+import styled, { ThemeProvider } from 'styled-components/native';
 import { api } from '../api/client';
 import useAuthStore from '../store/authStore';
 import { API_ROUTES } from 'focura-shared';
+import { theme } from '../theme';
 
-export default function RegisterScreen({ navigation }) {
+const Container = styled.View`
+  flex: 1;
+  justify-content: center;
+  padding: ${(props) => props.theme.spacing.large};
+  background-color: ${(props) => props.theme.colors.background};
+`;
+
+const Title = styled.Text`
+  font-size: ${(props) => props.theme.fontSizes.xlarge};
+  color: ${(props) => props.theme.colors.primary};
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: ${(props) => props.theme.spacing.large};
+`;
+
+const Input = styled.TextInput`
+  background-color: ${(props) => props.theme.colors.white};
+  border-radius: ${(props) => props.theme.borderRadius};
+  padding: ${(props) => props.theme.spacing.medium};
+  margin-bottom: ${(props) => props.theme.spacing.medium};
+  font-size: ${(props) => props.theme.fontSizes.medium};
+  border: 1px solid ${(props) => props.theme.colors.lightGray};
+`;
+
+const SwitchText = styled.Text`
+  color: ${(props) => props.theme.colors.primary};
+  text-align: center;
+  margin-top: ${(props) => props.theme.spacing.medium};
+`;
+
+function RegisterScreenContent({ navigation }) {
   const { control, handleSubmit } = useForm({ defaultValues: { name: '', email: '', password: '' } });
   const setAuth = useAuthStore((s) => s.setAuth);
 
@@ -14,19 +46,24 @@ export default function RegisterScreen({ navigation }) {
       const res = await api.post(API_ROUTES.auth.register, data);
       setAuth({ token: res.data.token, user: res.data.user });
     } catch (err) {
-      Alert.alert('Register failed', err?.response?.data?.error || 'Please try again');
+      Alert.alert('Registration failed', err?.response?.data?.error || 'Please try again');
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Register</Text>
+    <Container>
+      <Title>Create Account</Title>
       <Controller
         control={control}
         name="name"
         rules={{ required: true }}
         render={({ field: { onChange, value } }) => (
-          <TextInput style={styles.input} placeholder="Name" value={value} onChangeText={onChange} />
+          <Input
+            placeholder="Name"
+            value={value}
+            onChangeText={onChange}
+            placeholderTextColor={theme.colors.gray}
+          />
         )}
       />
       <Controller
@@ -34,7 +71,13 @@ export default function RegisterScreen({ navigation }) {
         name="email"
         rules={{ required: true }}
         render={({ field: { onChange, value } }) => (
-          <TextInput style={styles.input} placeholder="Email" keyboardType="email-address" value={value} onChangeText={onChange} />
+          <Input
+            placeholder="Email"
+            keyboardType="email-address"
+            value={value}
+            onChangeText={onChange}
+            placeholderTextColor={theme.colors.gray}
+          />
         )}
       />
       <Controller
@@ -42,20 +85,27 @@ export default function RegisterScreen({ navigation }) {
         name="password"
         rules={{ required: true, minLength: 6 }}
         render={({ field: { onChange, value } }) => (
-          <TextInput style={styles.input} placeholder="Password" secureTextEntry value={value} onChangeText={onChange} />
+          <Input
+            placeholder="Password"
+            secureTextEntry
+            value={value}
+            onChangeText={onChange}
+            placeholderTextColor={theme.colors.gray}
+          />
         )}
       />
-      <Button title="Create Account" onPress={handleSubmit(onSubmit)} />
-      <View style={{ height: 12 }} />
-      <Button title="Back to Login" onPress={() => navigation.navigate('Login')} />
-    </View>
+      <Button title="Register" onPress={handleSubmit(onSubmit)} color={theme.colors.primary} />
+      <SwitchText onPress={() => navigation.navigate('Login')}>
+        Already have an account? Login
+      </SwitchText>
+    </Container>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, justifyContent: 'center' },
-  title: { fontSize: 24, fontWeight: '600', marginBottom: 16, textAlign: 'center' },
-  input: { borderWidth: 1, borderColor: '#ccc', padding: 12, marginBottom: 12, borderRadius: 8 }
-});
-
-
+export default function RegisterScreen({ navigation }) {
+  return (
+    <ThemeProvider theme={theme}>
+      <RegisterScreenContent navigation={navigation} />
+    </ThemeProvider>
+  );
+}

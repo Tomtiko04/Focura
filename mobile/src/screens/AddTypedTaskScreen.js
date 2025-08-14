@@ -1,11 +1,36 @@
 import React from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { Alert, Button } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
+import styled, { ThemeProvider } from 'styled-components/native';
 import { api } from '../api/client';
 import { API_ROUTES } from 'focura-shared';
+import { theme } from '../theme';
 import useAuthStore from '../store/authStore';
 
-export default function AddTypedTaskScreen({ navigation }) {
+const Container = styled.ScrollView`
+  flex: 1;
+  padding: ${(props) => props.theme.spacing.large};
+  background-color: ${(props) => props.theme.colors.background};
+`;
+
+const Title = styled.Text`
+  font-size: ${(props) => props.theme.fontSizes.xlarge};
+  color: ${(props) => props.theme.colors.primary};
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: ${(props) => props.theme.spacing.large};
+`;
+
+const Input = styled.TextInput`
+  background-color: ${(props) => props.theme.colors.white};
+  border-radius: ${(props) => props.theme.borderRadius};
+  padding: ${(props) => props.theme.spacing.medium};
+  margin-bottom: ${(props) => props.theme.spacing.medium};
+  font-size: ${(props) => props.theme.fontSizes.medium};
+  border: 1px solid ${(props) => props.theme.colors.lightGray};
+`;
+
+function AddTypedTaskScreenContent({ navigation }) {
   const { control, handleSubmit } = useForm({ defaultValues: { mainTask: '', subtasks: '', time: '', place: '' } });
   const token = useAuthStore((s) => s.token);
 
@@ -25,30 +50,67 @@ export default function AddTypedTaskScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Type Task</Text>
-      <Controller name="mainTask" control={control} rules={{ required: true }} render={({ field: { onChange, value } }) => (
-        <TextInput style={styles.input} placeholder="Main task" value={value} onChangeText={onChange} />
-      )} />
-      <Controller name="subtasks" control={control} render={({ field: { onChange, value } }) => (
-        <TextInput style={[styles.input, styles.textarea]} multiline placeholder="Subtasks (comma or newline separated)" value={value} onChangeText={onChange} />
-      )} />
-      <Controller name="time" control={control} render={({ field: { onChange, value } }) => (
-        <TextInput style={styles.input} placeholder="Time (e.g., 2pm or 2025-08-12T14:00)" value={value} onChangeText={onChange} />
-      )} />
-      <Controller name="place" control={control} render={({ field: { onChange, value } }) => (
-        <TextInput style={styles.input} placeholder="Place (optional)" value={value} onChangeText={onChange} />
-      )} />
-      <Button title="Create" onPress={handleSubmit(onSubmit)} />
-    </View>
+    <Container contentContainerStyle={{ justifyContent: 'center', flexGrow: 1 }}>
+      <Title>Type Task</Title>
+      <Controller
+        control={control}
+        name="mainTask"
+        rules={{ required: true }}
+        render={({ field: { onChange, value } }) => (
+          <Input
+            placeholder="Main task"
+            value={value}
+            onChangeText={onChange}
+            placeholderTextColor={theme.colors.gray}
+          />
+        )}
+      />
+      <Controller
+        control={control}
+        name="subtasks"
+        render={({ field: { onChange, value } }) => (
+          <Input
+            placeholder="Subtasks (comma or newline separated)"
+            value={value}
+            onChangeText={onChange}
+            multiline
+            placeholderTextColor={theme.colors.gray}
+          />
+        )}
+      />
+      <Controller
+        control={control}
+        name="time"
+        render={({ field: { onChange, value } }) => (
+          <Input
+            placeholder="Time (e.g., 2pm or 2025-08-12T14:00)"
+            value={value}
+            onChangeText={onChange}
+            placeholderTextColor={theme.colors.gray}
+          />
+        )}
+      />
+      <Controller
+        control={control}
+        name="place"
+        render={({ field: { onChange, value } }) => (
+          <Input
+            placeholder="Place (optional)"
+            value={value}
+            onChangeText={onChange}
+            placeholderTextColor={theme.colors.gray}
+          />
+        )}
+      />
+      <Button title="Create" onPress={handleSubmit(onSubmit)} color={theme.colors.primary} />
+    </Container>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
-  title: { fontSize: 20, fontWeight: '700', marginBottom: 12 },
-  input: { borderWidth: 1, borderColor: '#ccc', padding: 12, borderRadius: 8, marginBottom: 12 },
-  textarea: { height: 100, textAlignVertical: 'top' }
-});
-
-
+export default function AddTypedTaskScreen({ navigation }) {
+  return (
+    <ThemeProvider theme={theme}>
+      <AddTypedTaskScreenContent navigation={navigation} />
+    </ThemeProvider>
+  );
+}

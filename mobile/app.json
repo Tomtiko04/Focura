@@ -8,6 +8,12 @@
     },
     "android": {
       "package": "com.anonymous.focura"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "bb6b441e-622c-4947-ae5e-6e21cea5e196"
+      }
+    },
+    "owner": "tomtiko"
   }
 }

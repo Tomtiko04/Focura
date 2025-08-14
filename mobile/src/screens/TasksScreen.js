@@ -1,24 +1,64 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, RefreshControl } from 'react-native';
+import { FlatList, ActivityIndicator, RefreshControl } from 'react-native';
+import styled, { ThemeProvider } from 'styled-components/native';
 import { api } from '../api/client';
 import useAuthStore from '../store/authStore';
 import { API_ROUTES } from 'focura-shared';
+import { theme } from '../theme';
 
-export default function TasksScreen() {
+const Container = styled.View`
+  flex: 1;
+  background-color: ${(props) => props.theme.colors.background};
+`;
+
+const TaskItem = styled.View`
+  background-color: ${(props) => props.theme.colors.white};
+  padding: ${(props) => props.theme.spacing.medium};
+  margin: ${(props) => props.theme.spacing.small};
+  border-radius: ${(props) => props.theme.borderRadius};
+  border: 1px solid ${(props) => props.theme.colors.lightGray};
+`;
+
+const TaskText = styled.Text`
+  font-size: ${(props) => props.theme.fontSizes.medium};
+  color: ${(props) => props.theme.colors.text};
+`;
+
+const MetaText = styled.Text`
+  font-size: ${(props) => props.theme.fontSizes.small};
+  color: ${(props) => props.theme.colors.meta};
+  margin-top: ${(props) => props.theme.spacing.xsmall};
+`;
+
+const SubheaderText = styled.Text`
+  font-size: ${(props) => props.theme.fontSizes.small};
+  color: ${(props) => props.theme.colors.text};
+  font-weight: ${(props) => props.theme.fontWeights.bold};
+  margin-top: ${(props) => props.theme.spacing.small};
+`;
+
+const SubtaskText = styled.Text`
+  font-size: ${(props) => props.theme.fontSizes.small};
+  color: ${(props) => props.theme.colors.text};
+  margin-top: ${(props) => props.theme.spacing.xsmall};
+`;
+
+function TasksScreenContent() {
   const token = useAuthStore((s) => s.token);
   const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
 
   const load = async () => {
-    setRefreshing(true);
+    setLoading(true);
     try {
       const res = await api.get(API_ROUTES.tasks.list, { headers: { Authorization: `Bearer ${token}` } });
       setTasks(res.data.tasks || []);
-    } catch (e) {
-      // noop
-    } finally {
-      setRefreshing(false);
+    } catch (err) {
+      setError('Failed to fetch tasks. Please try again.');
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -26,39 +66,45 @@ export default function TasksScreen() {
   }, []);
 
   const renderItem = ({ item }) => (
-    <View style={styles.card}>
-      <Text style={styles.main}>{item.mainTask}</Text>
-      {item.place ? <Text style={styles.meta}>Place: {item.place}</Text> : null}
-      {item.time ? <Text style={styles.meta}>Time: {new Date(item.time).toLocaleString()}</Text> : null}
+    <TaskItem>
+      <TaskText>{item.mainTask}</TaskText>
+      {item.place ? <MetaText>Place: {item.place}</MetaText> : null}
+      {item.time ? <MetaText>Time: {new Date(item.time).toLocaleString()}</MetaText> : null}
       {item.subtasks?.length ? (
-        <View style={{ marginTop: 6 }}>
-          <Text style={styles.subheader}>Subtasks</Text>
+        <View>
+          <SubheaderText>Subtasks</SubheaderText>
           {item.subtasks.map((s, idx) => (
-            <Text key={idx} style={styles.subtask}>• {s}</Text>
+            <SubtaskText key={idx}>• {s}</SubtaskText>
           ))}
         </View>
       ) : null}
-    </View>
+    </TaskItem>
   );
 
+  if (loading) {
+    return <ActivityIndicator size="large" color={theme.colors.primary} style={{ marginTop: 20 }} />;
+  }
+
+  if (error) {
+    return <TaskText>{error}</TaskText>;
+  }
+
   return (
-    <FlatList
-      data={tasks}
-      keyExtractor={(t) => t._id}
-      renderItem={renderItem}
-      contentContainerStyle={styles.list}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={load} />}
-    />
+    <Container>
+      <FlatList
+        data={tasks}
+        keyExtractor={(item) => item._id}
+        renderItem={renderItem}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={load} />}
+      />
+    </Container>
   );
 }
 
-const styles = StyleSheet.create({
-  list: { padding: 16 },
-  card: { backgroundColor: '#fff', padding: 12, borderRadius: 8, marginBottom: 12, borderWidth: 1, borderColor: '#eee' },
-  main: { fontSize: 16, fontWeight: '700' },
-  meta: { color: '#555', marginTop: 2 },
-  subheader: { fontWeight: '600', marginTop: 6 },
-  subtask: { marginTop: 2 }
-});
-
-
+export default function TasksScreen() {
+  return (
+    <ThemeProvider theme={theme}>
+      <TasksScreenContent />
+    </ThemeProvider>
+  );
+}
