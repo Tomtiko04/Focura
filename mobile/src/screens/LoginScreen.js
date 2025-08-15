@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Alert, Button, Animated, TouchableOpacity } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import styled, { useTheme } from "styled-components/native";
+import { Ionicons } from '@expo/vector-icons';
 import { api } from "../api/client";
 import useAuthStore from "../store/authStore";
 import { API_ROUTES } from "focura-shared";
@@ -40,10 +41,6 @@ const ToggleEye = styled(TouchableOpacity)`
 	top: 50%;
 	transform: translateY(-12px);
 	padding: 4px;
-`;
-
-const EyeText = styled.Text`
-	color: ${(p) => p.theme.colors.meta};
 `;
 
 const SwitchText = styled.Text`
@@ -114,7 +111,7 @@ function LoginScreenContent({ navigation }) {
 							placeholderTextColor={theme.colors.gray}
 						/>
 						<ToggleEye onPress={() => setShowPassword((v) => !v)} accessibilityLabel={showPassword ? 'Hide password' : 'Show password'}>
-							<EyeText>{showPassword ? 'Hide' : 'Show'}</EyeText>
+							<Ionicons name={showPassword ? 'eye-off' : 'eye'} size={22} color={theme.colors.meta} />
 						</ToggleEye>
 					</InputWrap>
 				)}

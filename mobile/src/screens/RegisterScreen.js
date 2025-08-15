@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Alert, Button, Animated, TouchableOpacity } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import styled, { useTheme } from 'styled-components/native';
+import { Ionicons } from '@expo/vector-icons';
 import { api } from '../api/client';
 import useAuthStore from '../store/authStore';
 import { API_ROUTES } from 'focura-shared';
@@ -42,10 +43,6 @@ const ToggleEye = styled(TouchableOpacity)`
   width: 44px;
   align-items: center;
   justify-content: center;
-`;
-
-const EyeText = styled.Text`
-  color: ${(p) => p.theme.colors.meta};
 `;
 
 const SwitchText = styled.Text`
@@ -126,7 +123,7 @@ function RegisterScreenContent({ navigation }) {
               placeholderTextColor={theme.colors.gray}
             />
             <ToggleEye onPress={() => setShowPassword((v) => !v)} accessibilityLabel={showPassword ? 'Hide password' : 'Show password'}>
-              <EyeText>{showPassword ? 'Hide' : 'Show'}</EyeText>
+              <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={22} color={theme.colors.meta} />
             </ToggleEye>
           </InputWrap>
         )}
@@ -145,7 +142,7 @@ function RegisterScreenContent({ navigation }) {
               placeholderTextColor={theme.colors.gray}
             />
             <ToggleEye onPress={() => setShowConfirm((v) => !v)} accessibilityLabel={showConfirm ? 'Hide password' : 'Show password'}>
-              <EyeText>{showConfirm ? 'Hide' : 'Show'}</EyeText>
+              <Ionicons name={showConfirm ? 'eye-off' : 'eye'} size={22} color={theme.colors.meta} />
             </ToggleEye>
           </InputWrap>
         )}
