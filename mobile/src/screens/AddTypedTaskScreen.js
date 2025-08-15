@@ -9,24 +9,24 @@ import useAuthStore from '../store/authStore';
 
 const Container = styled.ScrollView`
   flex: 1;
-  padding: ${(props) => props.theme.spacing.large};
+  padding: ${(props) => props.theme.spacing.large}px;
   background-color: ${(props) => props.theme.colors.background};
 `;
 
 const Title = styled.Text`
-  font-size: ${(props) => props.theme.fontSizes.xlarge};
+  font-size: ${(props) => props.theme.fontSizes.xlarge}px;
   color: ${(props) => props.theme.colors.primary};
   font-weight: bold;
   text-align: center;
-  margin-bottom: ${(props) => props.theme.spacing.large};
+  margin-bottom: ${(props) => props.theme.spacing.large}px;
 `;
 
 const Input = styled.TextInput`
   background-color: ${(props) => props.theme.colors.white};
-  border-radius: ${(props) => props.theme.borderRadius};
-  padding: ${(props) => props.theme.spacing.medium};
-  margin-bottom: ${(props) => props.theme.spacing.medium};
-  font-size: ${(props) => props.theme.fontSizes.medium};
+  border-radius: ${(props) => props.theme.borderRadius}px;
+  padding: ${(props) => props.theme.spacing.medium}px;
+  margin-bottom: ${(props) => props.theme.spacing.medium}px;
+  font-size: ${(props) => props.theme.fontSizes.medium}px;
   border: 1px solid ${(props) => props.theme.colors.lightGray};
 `;
 

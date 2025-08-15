@@ -9,23 +9,23 @@ import { theme } from '../theme';
 const Container = styled.View`
   flex: 1;
   justify-content: center;
-  padding: ${(props) => props.theme.spacing.large};
+  padding: ${(props) => props.theme.spacing.large}px;
   background-color: ${(props) => props.theme.colors.background};
 `;
 
 const Title = styled.Text`
-  font-size: ${(props) => props.theme.fontSizes.xlarge};
+  font-size: ${(props) => props.theme.fontSizes.xlarge}px;
   color: ${(props) => props.theme.colors.primary};
   font-weight: bold;
   text-align: center;
-  margin-bottom: ${(props) => props.theme.spacing.large};
+  margin-bottom: ${(props) => props.theme.spacing.large}px;
 `;
 
 const WelcomeText = styled.Text`
-  font-size: ${(props) => props.theme.fontSizes.large};
+  font-size: ${(props) => props.theme.fontSizes.large}px;
   color: ${(props) => props.theme.colors.text};
   text-align: center;
-  margin-bottom: ${(props) => props.theme.spacing.large};
+  margin-bottom: ${(props) => props.theme.spacing.large}px;
 `;
 
 const StatsGrid = styled.View`
@@ -37,9 +37,9 @@ const StatsGrid = styled.View`
 const StatCard = styled.View`
   width: 48%;
   background-color: ${(p) => p.theme.colors.white};
-  border-radius: ${(p) => p.theme.borderRadius};
-  padding: ${(p) => p.theme.spacing.medium};
-  margin-bottom: ${(p) => p.theme.spacing.medium};
+  border-radius: ${(p) => p.theme.borderRadius}px;
+  padding: ${(p) => p.theme.spacing.medium}px;
+  margin-bottom: ${(p) => p.theme.spacing.medium}px;
   border: 1px solid ${(p) => p.theme.colors.lightGray};
 `;
 
@@ -48,16 +48,16 @@ const StatLabel = styled.Text`
 `;
 
 const StatValue = styled.Text`
-  font-size: ${(p) => p.theme.fontSizes.xlarge};
+  font-size: ${(p) => p.theme.fontSizes.xlarge}px;
   font-weight: bold;
   color: ${(p) => p.theme.colors.text};
 `;
 
 const SectionTitle = styled.Text`
-  font-size: ${(p) => p.theme.fontSizes.large};
+  font-size: ${(p) => p.theme.fontSizes.large}px;
   font-weight: bold;
-  margin-top: ${(p) => p.theme.spacing.large};
-  margin-bottom: ${(p) => p.theme.spacing.small};
+  margin-top: ${(p) => p.theme.spacing.large}px;
+  margin-bottom: ${(p) => p.theme.spacing.small}px;
 `;
 
 function HomeScreenContent({ navigation }) {

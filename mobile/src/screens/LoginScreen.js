@@ -26,6 +26,7 @@ const Input = styled.TextInput`
 	background-color: ${(props) => props.theme.colors.white};
 	border-radius: ${(props) => props.theme.borderRadius}px;
 	padding: ${(props) => props.theme.spacing.medium}px;
+	padding-right: 44px;
 	margin-bottom: ${(props) => props.theme.spacing.medium}px;
 	font-size: ${(props) => props.theme.fontSizes.medium}px;
 	border: 1px solid ${(props) => props.theme.colors.lightGray};
@@ -38,9 +39,11 @@ const InputWrap = styled.View`
 const ToggleEye = styled(TouchableOpacity)`
 	position: absolute;
 	right: 12px;
-	top: 50%;
-	transform: translateY(-12px);
-	padding: 4px;
+	top: 8px;
+	height: 44px;
+	width: 44px;
+	align-items: center;
+	justify-content: center;
 `;
 
 const SwitchText = styled.Text`
