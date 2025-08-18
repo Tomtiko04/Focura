@@ -50,6 +50,19 @@ function TasksScreenContent() {
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
 
+  const formatWhen = (ts) => {
+    if (!ts) return null;
+    try {
+      const d = new Date(ts);
+      // If backend stores as UTC (ends with Z), display in UTC to reflect intended input time
+      const opts = { dateStyle: 'short', timeStyle: 'short' };
+      if (typeof ts === 'string' && /Z$/i.test(ts)) return d.toLocaleString(undefined, { ...opts, timeZone: 'UTC' });
+      return d.toLocaleString(undefined, opts);
+    } catch {
+      return String(ts);
+    }
+  };
+
   const load = async () => {
     setLoading(true);
     try {
@@ -65,21 +78,26 @@ function TasksScreenContent() {
     load();
   }, []);
 
-  const renderItem = ({ item }) => (
-    <TaskItem>
-      <TaskText>{item.mainTask}</TaskText>
-      {item.place ? <MetaText>Place: {item.place}</MetaText> : null}
-      {item.time ? <MetaText>Time: {new Date(item.time).toLocaleString()}</MetaText> : null}
-      {item.subtasks?.length ? (
-        <View>
-          <SubheaderText>Subtasks</SubheaderText>
-          {item.subtasks.map((s, idx) => (
-            <SubtaskText key={idx}>• {s}</SubtaskText>
-          ))}
-        </View>
-      ) : null}
-    </TaskItem>
-  );
+  const renderItem = ({ item }) => {
+    const when = formatWhen(item.time);
+    const intention = `I will ${item.mainTask || ''}${when ? ` at ${when}` : ''}${item.place ? ` in ${item.place}` : ''}`;
+    return (
+      <TaskItem>
+        <TaskText>{item.mainTask}</TaskText>
+        {item.place ? <MetaText>Place: {item.place}</MetaText> : null}
+        {when ? <MetaText>Time: {when}</MetaText> : null}
+        <MetaText>{intention}</MetaText>
+        {item.subtasks?.length ? (
+          <View>
+            <SubheaderText>Subtasks</SubheaderText>
+            {item.subtasks.map((s, idx) => (
+              <SubtaskText key={idx}>• {s}</SubtaskText>
+            ))}
+          </View>
+        ) : null}
+      </TaskItem>
+    );
+  };
 
   if (loading) {
     return <ActivityIndicator size="large" color={theme.colors.primary} style={{ marginTop: 20 }} />;

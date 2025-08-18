@@ -17,6 +17,8 @@ import SnapTaskScreen from './src/screens/SnapTaskScreen';
 import OnboardingScreen from './src/screens/OnboardingScreen';
 import useAuthStore from './src/store/authStore';
 import TabNavigator from './src/navigation/TabNavigator';
+import NotificationsScreen from './src/screens/NotificationsScreen';
+import SettingsScreen from './src/screens/SettingsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -38,6 +40,8 @@ export default function App() {
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
           <Stack.Screen name="Home" component={TabNavigator} options={{ headerShown: false }} />
+          <Stack.Screen name="Notifications" component={NotificationsScreen} />
+          <Stack.Screen name="Settings" component={SettingsScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </ThemeProvider>

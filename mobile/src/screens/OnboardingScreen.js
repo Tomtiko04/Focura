@@ -196,7 +196,7 @@ function OnboardingContent({ navigation }) {
     const id = setInterval(() => {
       const next = (index + 1) % slides.length;
       setIndex(next);
-      listRef.current?.scrollToIndex({ index: next, animated: true });
+      listRef.current?.scrollToOffset?.({ offset: next * width, animated: true });
     }, 3000);
     return () => clearInterval(id);
   }, [index]);

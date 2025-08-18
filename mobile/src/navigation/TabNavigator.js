@@ -5,15 +5,26 @@ import HomeScreen from '../screens/HomeScreen'
 import TasksScreen from '../screens/TasksScreen'
 import AddTypedTaskScreen from '../screens/AddTypedTaskScreen'
 import SnapTaskScreen from '../screens/SnapTaskScreen'
+import { View, TouchableOpacity } from 'react-native'
 
 const Tab = createBottomTabNavigator()
 
 export default function TabNavigator () {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
+      screenOptions={({ route, navigation }) => ({
+        headerShown: true,
         tabBarShowLabel: true,
+        headerRight: ({ tintColor }) => (
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <TouchableOpacity onPress={() => navigation.navigate('Notifications')} style={{ paddingHorizontal: 8 }} accessibilityLabel="Notifications">
+              <Ionicons name="notifications-outline" size={22} color={tintColor || '#666'} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('Settings')} style={{ paddingHorizontal: 8 }} accessibilityLabel="Settings">
+              <Ionicons name="settings-outline" size={22} color={tintColor || '#666'} />
+            </TouchableOpacity>
+          </View>
+        ),
         tabBarIcon: ({ color, size }) => {
           let icon = 'home-outline'
           if (route.name === 'Home') icon = 'home-outline'
@@ -31,5 +42,3 @@ export default function TabNavigator () {
     </Tab.Navigator>
   )
 }
-
-
