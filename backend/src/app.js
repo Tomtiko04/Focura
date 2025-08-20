@@ -3,6 +3,7 @@ import morgan from 'morgan'
 import cors from 'cors'
 import authRoutes from './routes/auth.js'
 import taskRoutes from './routes/tasks.js'
+import userRoutes from './routes/users.js'
 import { authMiddleware } from './middleware/auth.js'
 
 const app = express()
@@ -18,6 +19,7 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/auth', authRoutes)
 app.use('/api/tasks', taskRoutes)
+app.use('/api/users', userRoutes)
 
 app.get('/api/protected', authMiddleware, (req, res) => {
   res.json({ message: 'Protected content', user: req.user })
