@@ -67,7 +67,17 @@ router.get('/verify', limiterSensitive, async (req, res) => {
   user.verification = { tokenHash: undefined, expiresAt: undefined };
   await user.save();
   const redirect = process.env.APP_VERIFY_REDIRECT || 'focura://verified';
-  res.send(`Email verified. You can return to the app. <a href="${redirect}">Open app</a>`);
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.send(`
+    <html><body style="font-family:Arial,Helvetica,sans-serif;background:#f8fafc;padding:24px;">
+      <div style="max-width:520px;margin:0 auto;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:24px;text-align:center;">
+        <div style="font-size:32px;">✅</div>
+        <h1 style="margin:12px 0 8px 0;font-size:20px;color:#111827;">Email verified</h1>
+        <p style="color:#374151;">You're all set. You can return to the Focura app.</p>
+        <a href="${redirect}" style="display:inline-block;background:#2563eb;color:#fff;text-decoration:none;padding:12px 18px;border-radius:8px;font-weight:600;">Open the app</a>
+      </div>
+    </body></html>
+  `);
 });
 
 router.post(
@@ -156,6 +166,24 @@ router.post(
     return res.json({ message: 'If that email exists, a reset link has been sent.' });
   }
 );
+
+// Simple web fallback: reset password form
+router.get('/reset', async (req, res) => {
+  const { token } = req.query;
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  return res.send(`
+    <html><body style="font-family:Arial,Helvetica,sans-serif;background:#f8fafc;padding:24px;">
+      <div style="max-width:520px;margin:0 auto;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:24px;">
+        <h1 style="font-size:20px;color:#111827;">Reset your password</h1>
+        <form method="POST" action="/api/auth/reset-password" style="display:flex;flex-direction:column;gap:12px;">
+          <input type="hidden" name="token" value="${token || ''}"/>
+          <label>New password<br/><input name="password" type="password" required minlength="8" style="padding:8px;border:1px solid #d1d5db;border-radius:6px;width:100%"/></label>
+          <button type="submit" style="background:#2563eb;color:#fff;border:none;border-radius:8px;padding:10px 14px;font-weight:600;cursor:pointer;">Set new password</button>
+        </form>
+      </div>
+    </body></html>
+  `);
+});
 
 router.post(
   '/reset-password',
