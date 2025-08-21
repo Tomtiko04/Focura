@@ -3,6 +3,9 @@ import { Animated, Easing, Dimensions, Platform } from 'react-native';
 import styled, { useTheme } from 'styled-components/native';
 import Svg, { Path } from 'react-native-svg';
 import useAuthStore from '../store/authStore';
+import * as Notifications from 'expo-notifications';
+import * as Linking from 'expo-linking';
+import notifications from '../utils/notifications';
 
 const { width, height } = Dimensions.get('window');
 
@@ -144,6 +147,49 @@ function SplashScreenContent({ navigation }) {
   const dot3 = useRef(new Animated.Value(0.3)).current;
 
   useEffect(() => {
+    const init = async () => {
+      try {
+        // Configure notifications
+        await notifications.configureNotifications();
+        
+        // Check for deep links
+        const initialUrl = await Linking.getInitialURL();
+        if (initialUrl) {
+          handleDeepLink(initialUrl);
+          return;
+        }
+        
+        // If no deep link, proceed with normal flow
+        const timer = setTimeout(() => {
+          navigation.replace(token ? 'Home' : 'Onboarding');
+        }, 3000);
+        
+        return () => clearTimeout(timer);
+      } catch (error) {
+        console.error('Splash screen init error:', error);
+        navigation.replace('Onboarding');
+      }
+    };
+    
+    init();
+  }, [token, navigation]);
+  
+  const handleDeepLink = (url) => {
+    const parsedUrl = Linking.parse(url);
+    const { path, queryParams } = parsedUrl;
+    
+    // Handle different deep link paths
+    if (path === 'verify') {
+      navigation.replace('Verify', { token: queryParams.token });
+    } else if (path === 'reset-password') {
+      navigation.replace('ResetPassword', { token: queryParams.token });
+    } else {
+      // Default navigation
+      navigation.replace(token ? 'Home' : 'Onboarding');
+    }
+  };
+
+  useEffect(() => {
     // Animate title
     Animated.parallel([
       Animated.spring(titleScale, { toValue: 1, friction: 6, tension: 80, useNativeDriver: USE_NATIVE }),
@@ -180,16 +226,10 @@ function SplashScreenContent({ navigation }) {
     pulse(dot2, 150);
     pulse(dot3, 300);
 
-    // Navigate after a short showcase
-    const t = setTimeout(() => {
-      navigation.replace(token ? 'Home' : 'Onboarding');
-    }, 4200);
-
     return () => {
       clearInterval(interval);
-      clearTimeout(t);
     };
-  }, [cursorOpacity, dot1, dot2, dot3, fullSubtitle, navigation, titleOpacity, titleScale, token]);
+  }, [cursorOpacity, dot1, dot2, dot3, fullSubtitle, titleOpacity, titleScale]);
 
   return (
     <Root>

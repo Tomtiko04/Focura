@@ -3,6 +3,7 @@ import { Dimensions, Animated, TouchableOpacity } from 'react-native';
 import styled, { useTheme } from 'styled-components/native';
 import Svg, { Path, Rect, Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
 import useThemeStore from '../store/themeStore';
+import notifications from '../utils/notifications';
 
 const { width } = Dimensions.get('window');
 
@@ -156,6 +157,23 @@ const slides = [
       </Svg>
     ),
   },
+  {
+    key: 'notifications',
+    title: 'Never Miss a Task',
+    subtitle: 'Enable notifications to get reminders and stay on track with your goals.',
+    Illustration: ({ primary, secondary }) => (
+      <Svg width={200} height={130} viewBox="0 0 200 130" fill="none">
+        <Circle cx="100" cy="60" r="40" fill={primary} opacity="0.1" />
+        <Path d="M100 30v40m0 20v0" stroke={secondary} strokeWidth="2" strokeLinecap="round" />
+        <Path d="M80 80l-5 5m45-5l5 5" stroke={primary} strokeWidth="2" strokeLinecap="round" />
+        <Circle cx="120" cy="50" r="10" fill="#FF3B30" />
+      </Svg>
+    ),
+    action: async () => {
+      await notifications.requestPermissions();
+      await notifications.scheduleTestNotification();
+    },
+  },
 ];
 
 function SystemSwatchIcon() {
@@ -191,13 +209,24 @@ function OnboardingContent({ navigation }) {
     Animated.spring(openAnim, { toValue: open ? 1 : 0, useNativeDriver: true, friction: 7, tension: 90 }).start();
   }, [open, openAnim]);
 
-  // Auto-advance every 3s and loop
+  const handleNext = async () => {
+    // Call the action if it exists
+    if (slides[index]?.action) {
+      await slides[index].action();
+    }
+    
+    // Auto-advance to next slide or navigate to auth
+    const nextIndex = index + 1;
+    if (nextIndex < slides.length) {
+      setIndex(nextIndex);
+      listRef.current?.scrollToOffset?.({ offset: nextIndex * width, animated: true });
+    } else {
+      navigation.navigate('Decide');
+    }
+  };
+
   useEffect(() => {
-    const id = setInterval(() => {
-      const next = (index + 1) % slides.length;
-      setIndex(next);
-      listRef.current?.scrollToOffset?.({ offset: next * width, animated: true });
-    }, 3000);
+    const id = setInterval(handleNext, 3000);
     return () => clearInterval(id);
   }, [index]);
 
