@@ -31,11 +31,34 @@ const Input = styled.TextInput`
 `;
 
 function AddTypedTaskScreenContent({ navigation }) {
-  const { control, handleSubmit } = useForm({ defaultValues: { mainTask: '', subtasks: '', time: '', place: '' } });
+  const { control, handleSubmit } = useForm({
+    defaultValues: {
+      mainTask: '',
+      subtasks: '',
+      place: '',
+      startDate: '',
+      startTime: '',
+      endDate: '',
+      endTime: ''
+    }
+  });
   const token = useAuthStore((s) => s.token);
 
   const onSubmit = async (data) => {
-    const rawText = `Task: ${data.mainTask}\nSubtasks: ${data.subtasks}\nTime: ${data.time}\nPlace: ${data.place}`;
+    const intentionTime = `${data.startDate || ''} ${data.startTime || ''}`.trim();
+    const intentionPlace = data.place ? ` in ${data.place}` : '';
+    const endString = `${data.endDate || ''} ${data.endTime || ''}`.trim();
+    const intentionLine = intentionTime ? `I will ${data.mainTask} at ${intentionTime}${intentionPlace}` : `I will ${data.mainTask}${intentionPlace}`;
+    const rawText = [
+      `Task: ${data.mainTask}`,
+      `Subtasks: ${data.subtasks}`,
+      `Start Date: ${data.startDate}`,
+      `Start Time: ${data.startTime}`,
+      `End Date: ${data.endDate}`,
+      `End Time: ${data.endTime}`,
+      `Place: ${data.place}`,
+      `Implementation Intention: ${intentionLine}`
+    ].join('\n');
     try {
       const res = await api.post(
         API_ROUTES.tasks.create,
@@ -80,10 +103,10 @@ function AddTypedTaskScreenContent({ navigation }) {
       />
       <Controller
         control={control}
-        name="time"
+        name="place"
         render={({ field: { onChange, value } }) => (
           <Input
-            placeholder="Time (e.g., 2pm or 2025-08-12T14:00)"
+            placeholder="Place (optional)"
             value={value}
             onChangeText={onChange}
             placeholderTextColor={theme.colors.gray}
@@ -92,10 +115,46 @@ function AddTypedTaskScreenContent({ navigation }) {
       />
       <Controller
         control={control}
-        name="place"
+        name="startDate"
         render={({ field: { onChange, value } }) => (
           <Input
-            placeholder="Place (optional)"
+            placeholder="Start Date (e.g., 2025-08-18)"
+            value={value}
+            onChangeText={onChange}
+            placeholderTextColor={theme.colors.gray}
+          />
+        )}
+      />
+      <Controller
+        control={control}
+        name="startTime"
+        render={({ field: { onChange, value } }) => (
+          <Input
+            placeholder="Start Time (e.g., 14:00 or 2:00 PM)"
+            value={value}
+            onChangeText={onChange}
+            placeholderTextColor={theme.colors.gray}
+          />
+        )}
+      />
+      <Controller
+        control={control}
+        name="endDate"
+        render={({ field: { onChange, value } }) => (
+          <Input
+            placeholder="End Date (optional)"
+            value={value}
+            onChangeText={onChange}
+            placeholderTextColor={theme.colors.gray}
+          />
+        )}
+      />
+      <Controller
+        control={control}
+        name="endTime"
+        render={({ field: { onChange, value } }) => (
+          <Input
+            placeholder="End Time (optional)"
             value={value}
             onChangeText={onChange}
             placeholderTextColor={theme.colors.gray}

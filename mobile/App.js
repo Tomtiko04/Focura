@@ -19,6 +19,7 @@ import useAuthStore from './src/store/authStore';
 import TabNavigator from './src/navigation/TabNavigator';
 import NotificationsScreen from './src/screens/NotificationsScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
+import SnapReviewScreen from './src/screens/SnapReviewScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -42,6 +43,7 @@ export default function App() {
           <Stack.Screen name="Home" component={TabNavigator} options={{ headerShown: false }} />
           <Stack.Screen name="Notifications" component={NotificationsScreen} />
           <Stack.Screen name="Settings" component={SettingsScreen} />
+          <Stack.Screen name="SnapReview" component={SnapReviewScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </ThemeProvider>

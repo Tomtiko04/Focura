@@ -31,8 +31,8 @@ export default function SnapTaskScreen({ navigation }) {
       const res = await api.post(API_ROUTES.tasks.ocr, form, {
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
       });
-      Alert.alert('Parsed', `Added ${res.data.tasks?.length || 0} task(s)`);
-      navigation.navigate('Tasks');
+      const parsed = res.data.tasks || [];
+      navigation.navigate('SnapReview', { tasks: parsed, imageUri: preview });
     } catch (e) {
       Alert.alert('Error', e?.response?.data?.error || 'Failed to process');
     } finally {
