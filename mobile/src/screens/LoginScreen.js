@@ -1,47 +1,70 @@
-import React, { useEffect } from "react";
-import { Alert, Button } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Alert, Button, Animated, TouchableOpacity } from "react-native";
 import { useForm, Controller } from "react-hook-form";
-import styled, { ThemeProvider } from "styled-components/native";
+import styled, { useTheme } from "styled-components/native";
+import { Ionicons } from '@expo/vector-icons';
 import { api } from "../api/client";
 import useAuthStore from "../store/authStore";
 import { API_ROUTES } from "focura-shared";
-import { theme } from "../theme";
 
 const Container = styled.View`
 	flex: 1;
 	justify-content: center;
-	padding: ${(props) => props.theme.spacing.large};
+	padding: ${(props) => props.theme.spacing.large}px;
 	background-color: ${(props) => props.theme.colors.background};
 `;
 
-const Title = styled.Text`
-	font-size: ${(props) => props.theme.fontSizes.xlarge};
+const Title = styled(Animated.Text)`
+	font-size: ${(props) => props.theme.fontSizes.xlarge}px;
 	color: ${(props) => props.theme.colors.primary};
 	font-weight: bold;
 	text-align: center;
-	margin-bottom: ${(props) => props.theme.spacing.large};
+	margin-bottom: ${(props) => props.theme.spacing.large}px;
 `;
 
 const Input = styled.TextInput`
 	background-color: ${(props) => props.theme.colors.white};
-	border-radius: ${(props) => props.theme.borderRadius};
-	padding: ${(props) => props.theme.spacing.medium};
-	margin-bottom: ${(props) => props.theme.spacing.medium};
-	font-size: ${(props) => props.theme.fontSizes.medium};
+	border-radius: ${(props) => props.theme.borderRadius}px;
+	padding: ${(props) => props.theme.spacing.medium}px;
+	padding-right: 44px;
+	margin-bottom: ${(props) => props.theme.spacing.medium}px;
+	font-size: ${(props) => props.theme.fontSizes.medium}px;
 	border: 1px solid ${(props) => props.theme.colors.lightGray};
+`;
+
+const InputWrap = styled.View`
+	position: relative;
+`;
+
+const ToggleEye = styled(TouchableOpacity)`
+	position: absolute;
+	right: 12px;
+	top: 8px;
+	height: 44px;
+	width: 44px;
+	align-items: center;
+	justify-content: center;
 `;
 
 const SwitchText = styled.Text`
 	color: ${(props) => props.theme.colors.primary};
 	text-align: center;
-	margin-top: ${(props) => props.theme.spacing.medium};
+	margin-top: ${(props) => props.theme.spacing.medium}px;
 `;
 
 function LoginScreenContent({ navigation }) {
 	const { control, handleSubmit } = useForm({ defaultValues: { email: "", password: "" } });
 	const setAuth = useAuthStore((s) => s.setAuth);
-
 	const token = useAuthStore((s) => s.token);
+	const theme = useTheme();
+	const [showPassword, setShowPassword] = useState(false);
+
+	// entrance animation
+	const intro = useRef(new Animated.Value(0)).current;
+	useEffect(() => {
+		Animated.timing(intro, { toValue: 1, duration: 600, useNativeDriver: true }).start();
+	}, [intro]);
+
 	useEffect(() => {
 		if (token) {
 			navigation.reset({ index: 0, routes: [{ name: "Home" }] });
@@ -60,7 +83,9 @@ function LoginScreenContent({ navigation }) {
 
 	return (
 		<Container>
-			<Title>Login</Title>
+			<Title style={{ opacity: intro, transform: [{ translateY: intro.interpolate({ inputRange: [0, 1], outputRange: [16, 0] }) }] }}>
+				Login
+			</Title>
 			<Controller
 				control={control}
 				name="email"
@@ -80,13 +105,18 @@ function LoginScreenContent({ navigation }) {
 				name="password"
 				rules={{ required: true, minLength: 6 }}
 				render={({ field: { onChange, value } }) => (
-					<Input
-						placeholder="Password"
-						secureTextEntry
-						value={value}
-						onChangeText={onChange}
-						placeholderTextColor={theme.colors.gray}
-					/>
+					<InputWrap>
+						<Input
+							placeholder="Password"
+							secureTextEntry={!showPassword}
+							value={value}
+							onChangeText={onChange}
+							placeholderTextColor={theme.colors.gray}
+						/>
+						<ToggleEye onPress={() => setShowPassword((v) => !v)} accessibilityLabel={showPassword ? 'Hide password' : 'Show password'}>
+							<Ionicons name={showPassword ? 'eye-off' : 'eye'} size={22} color={theme.colors.meta} />
+						</ToggleEye>
+					</InputWrap>
 				)}
 			/>
 			<Button title="Login" onPress={handleSubmit(onSubmit)} color={theme.colors.primary} />
@@ -98,9 +128,5 @@ function LoginScreenContent({ navigation }) {
 }
 
 export default function LoginScreen({ navigation }) {
-	return (
-		<ThemeProvider theme={theme}>
-			<LoginScreenContent navigation={navigation} />
-		</ThemeProvider>
-	);
+	return <LoginScreenContent navigation={navigation} />;
 }

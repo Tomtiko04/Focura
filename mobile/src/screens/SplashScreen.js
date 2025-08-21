@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, Easing, Dimensions } from 'react-native';
-import styled, { ThemeProvider } from 'styled-components/native';
+import { Animated, Easing, Dimensions, Platform } from 'react-native';
+import styled, { useTheme } from 'styled-components/native';
 import Svg, { Path } from 'react-native-svg';
 import useAuthStore from '../store/authStore';
-import { theme } from '../theme';
 
 const { width, height } = Dimensions.get('window');
+
+const USE_NATIVE = Platform.OS !== 'web';
 
 const Root = styled.View`
   flex: 1;
@@ -77,13 +78,13 @@ function FloatingBlob({ size, color, start, delta, duration }) {
             toValue: 1,
             duration,
             easing: Easing.inOut(Easing.quad),
-            useNativeDriver: true,
+            useNativeDriver: USE_NATIVE,
           }),
           Animated.timing(translate, {
             toValue: 0,
             duration,
             easing: Easing.inOut(Easing.quad),
-            useNativeDriver: true,
+            useNativeDriver: USE_NATIVE,
           }),
         ]),
         Animated.sequence([
@@ -91,13 +92,13 @@ function FloatingBlob({ size, color, start, delta, duration }) {
             toValue: 1.05,
             duration: duration * 0.75,
             easing: Easing.inOut(Easing.sin),
-            useNativeDriver: true,
+            useNativeDriver: USE_NATIVE,
           }),
           Animated.timing(scale, {
             toValue: 0.98,
             duration: duration * 0.75,
             easing: Easing.inOut(Easing.sin),
-            useNativeDriver: true,
+            useNativeDriver: USE_NATIVE,
           }),
         ]),
       ])
@@ -126,6 +127,7 @@ function FloatingBlob({ size, color, start, delta, duration }) {
 
 function SplashScreenContent({ navigation }) {
   const token = useAuthStore((s) => s.token);
+  const theme = useTheme();
 
   // Title spring-in
   const titleScale = useRef(new Animated.Value(0.6)).current;
@@ -144,8 +146,8 @@ function SplashScreenContent({ navigation }) {
   useEffect(() => {
     // Animate title
     Animated.parallel([
-      Animated.spring(titleScale, { toValue: 1, friction: 6, tension: 80, useNativeDriver: true }),
-      Animated.timing(titleOpacity, { toValue: 1, duration: 600, easing: Easing.out(Easing.quad), useNativeDriver: true }),
+      Animated.spring(titleScale, { toValue: 1, friction: 6, tension: 80, useNativeDriver: USE_NATIVE }),
+      Animated.timing(titleOpacity, { toValue: 1, duration: 600, easing: Easing.out(Easing.quad), useNativeDriver: USE_NATIVE }),
     ]).start();
 
     // Typing effect
@@ -159,8 +161,8 @@ function SplashScreenContent({ navigation }) {
     // Cursor blink
     const blink = Animated.loop(
       Animated.sequence([
-        Animated.timing(cursorOpacity, { toValue: 0, duration: 400, useNativeDriver: true }),
-        Animated.timing(cursorOpacity, { toValue: 1, duration: 400, useNativeDriver: true }),
+        Animated.timing(cursorOpacity, { toValue: 0, duration: 400, useNativeDriver: USE_NATIVE }),
+        Animated.timing(cursorOpacity, { toValue: 1, duration: 400, useNativeDriver: USE_NATIVE }),
       ])
     );
     blink.start();
@@ -170,8 +172,8 @@ function SplashScreenContent({ navigation }) {
       Animated.loop(
         Animated.sequence([
           Animated.delay(delay),
-          Animated.timing(val, { toValue: 1, duration: 450, easing: Easing.inOut(Easing.quad), useNativeDriver: true }),
-          Animated.timing(val, { toValue: 0.3, duration: 450, easing: Easing.inOut(Easing.quad), useNativeDriver: true }),
+          Animated.timing(val, { toValue: 1, duration: 450, easing: Easing.inOut(Easing.quad), useNativeDriver: USE_NATIVE }),
+          Animated.timing(val, { toValue: 0.3, duration: 450, easing: Easing.inOut(Easing.quad), useNativeDriver: USE_NATIVE }),
         ])
       ).start();
     pulse(dot1, 0);
@@ -223,9 +225,5 @@ function SplashScreenContent({ navigation }) {
 }
 
 export default function SplashScreen({ navigation }) {
-  return (
-    <ThemeProvider theme={theme}>
-      <SplashScreenContent navigation={navigation} />
-    </ThemeProvider>
-  );
+  return <SplashScreenContent navigation={navigation} />;
 }
