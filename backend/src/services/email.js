@@ -56,6 +56,9 @@ function containerHtml({ title, emoji = '🎉', lead, ctaHref, ctaLabel, footerH
 }
 
 export async function sendVerificationEmail(to, token) {
+  if (process.env.EMAIL_DISABLE === 'true') {
+    return { disabled: true, to, token, type: 'verify' };
+  }
   // Primary CTA: backend web fallback endpoint that works today
   const verifyBackend = `${BACKEND_BASE}/api/auth/verify?token=${encodeURIComponent(token)}`;
   const { deep, universal, web } = buildLinks('verify', token);
@@ -88,6 +91,9 @@ export async function sendVerificationEmail(to, token) {
 }
 
 export async function sendPasswordResetEmail(to, token) {
+  if (process.env.EMAIL_DISABLE === 'true') {
+    return { disabled: true, to, token, type: 'reset' };
+  }
   const resetBackend = `${BACKEND_BASE}/api/auth/reset?token=${encodeURIComponent(token)}`; // simple web form
   const { deep, universal, web } = buildLinks('reset-password', token);
 
