@@ -1,0 +1,9 @@
+{
+  "models": [
+    {
+      "title": "GPT-OSS 20B (Local)",
+      "provider": "ollama",
+      "model": "gpt-oss:20b"
+    }
+  ]
+}
