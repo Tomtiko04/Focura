@@ -1,37 +1,56 @@
-const createExpoWebpackConfigAsync = require('@expo/webpack-config');
+const createExpoWebpackConfig = require('@expo/webpack-config');
+const { resolve } = require('path');
 
 module.exports = async function (env, argv) {
-  const config = await createExpoWebpackConfigAsync(
+  const config = await createExpoWebpackConfig(
     {
       ...env,
       babel: {
-        dangerouslyAddModulePathsToTranspile: [
-          // Ensure that all packages starting with @your-namespace are transpiled
-          '@react-navigation',
-          'react-native-reanimated',
-          'react-native-gesture-handler',
-        ],
-      },
+        dangerouslyAddModulePathsToTranspile: ['focura-shared']
+      }
     },
     argv
   );
 
-  // Customize the config before returning it
+  // Add fallbacks for Node.js core modules
+  config.resolve.fallback = {
+    ...config.resolve.fallback,
+    crypto: require.resolve('crypto-browserify'),
+    stream: require.resolve('stream-browserify'),
+    util: require.resolve('util/'),
+    buffer: require.resolve('buffer/'),
+    path: require.resolve('path-browserify'),
+    fs: false,
+    os: false,
+    http: false,
+    https: false,
+    zlib: false,
+  };
+
+  // Add polyfills
+  config.plugins = (config.plugins || []).concat([
+    new (require('webpack').ProvidePlugin)({
+      process: 'process/browser',
+      Buffer: ['buffer', 'Buffer'],
+    }),
+  ]);
+
+  // Ignore problematic modules
+  config.ignoreWarnings = [
+    /Failed to parse source map/, // Ignore source map warnings
+    /react-native-web/, // Ignore react-native-web warnings
+    /expo-notifications/, // Ignore expo-notifications warnings
+  ];
+
+  // Alias react-native to react-native-web
   config.resolve.alias = {
     ...config.resolve.alias,
     'react-native$': 'react-native-web',
-    'react-native-web': 'react-native-web',
-    'react-native-svg': 'react-native-svg-web',
+    'react-native-webview': 'react-native-web-webview',
+    'crypto': 'crypto-browserify',
+    'stream': 'stream-browserify',
+    'process': 'process/browser',
   };
-
-  // Add support for .mjs files
-  config.resolve.extensions = [
-    '.web.js',
-    '.web.jsx',
-    '.web.ts',
-    '.web.tsx',
-    ...config.resolve.extensions,
-  ];
 
   return config;
 };

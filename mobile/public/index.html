@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="theme-color" content="#000000" />
-    <meta name="description" content="Focura - Stay focused and organized" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="Focura - Your Task Management App">
     <title>Focura</title>
     <style>
       html, body, #root {
@@ -14,24 +14,20 @@
         padding: 0;
         overflow: hidden;
       }
-      @media (prefers-color-scheme: dark) {
+      @media (min-width: 768px) {
         body {
-          background-color: #121212;
+          max-width: 414px;
+          margin: 0 auto;
+          border-left: 1px solid #e0e0e0;
+          border-right: 1px solid #e0e0e0;
         }
       }
     </style>
   </head>
   <body>
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
     <div id="root"></div>
-    <script>
-      // This ensures the root element is properly sized
-      document.addEventListener('DOMContentLoaded', () => {
-        const root = document.getElementById('root');
-        if (root) {
-          root.style.display = 'flex';
-          root.style.flex = '1';
-        }
-      });
-    </script>
   </body>
 </html>

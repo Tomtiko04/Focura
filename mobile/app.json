@@ -1,22 +1,19 @@
 {
-  "expo": {
-    "name": "Focura",
-    "slug": "focura",
-    "scheme": "focura",
-    "plugins": [
-      "expo-notifications"
-    ],
-    "splash": {
-      "backgroundColor": "#ffffff"
-    },
-    "android": {
-      "package": "com.anonymous.focura"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "bb6b441e-622c-4947-ae5e-6e21cea5e196"
-      }
-    },
-    "owner": "tomtiko"
-  }
+	"expo": {
+		"name": "Focura",
+		"slug": "focura",
+		"plugins": [],
+		"splash": {
+			"backgroundColor": "#ffffff"
+		},
+		"android": {
+			"package": "com.anonymous.focura"
+		},
+		"extra": {
+			"eas": {
+				"projectId": "bb6b441e-622c-4947-ae5e-6e21cea5e196"
+			}
+		},
+		"owner": "tomtiko"
+	}
 }

@@ -8,14 +8,17 @@ if (Platform.OS === 'web') {
   // For web, use the standard registration
   registerRootComponent(App);
 } else {
-  // For native platforms, use AppRegistry
-  AppRegistry.registerComponent('main', () => App);
+  // For native platforms
+  const appName = 'Focura';
   
-  // For web, we also need to register the web version
+  // Register the app
+  AppRegistry.registerComponent(appName, () => App);
+  
+  // For web, we need to manually run the application
   if (Platform.OS === 'web') {
-    const rootTag = document.getElementById('root');
+    const rootTag = document.getElementById('root') || document.getElementById('main');
     if (rootTag) {
-      AppRegistry.runApplication('main', { rootTag });
+      AppRegistry.runApplication(appName, { rootTag });
     }
   }
 }

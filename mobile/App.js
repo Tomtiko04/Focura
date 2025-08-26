@@ -1,22 +1,24 @@
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StatusBar, Platform, Linking, useColorScheme } from "react-native";
+import { StatusBar, Platform, Linking, useColorScheme } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { ThemeProvider } from 'styled-components/native';
 import { getTheme } from './src/theme';
 import useThemeStore from './src/store/themeStore';
 import useAuthStore, { initAuthFromStorage } from './src/store/authStore';
+
+// Import your screens
+import SplashScreen from './src/screens/SplashScreen';
+import OnboardingScreen from './src/screens/OnboardingScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import HomeScreen from './src/screens/HomeScreen';
-import SplashScreen from './src/screens/SplashScreen';
+import TabNavigator from './src/navigation/TabNavigator';
 import DecideScreen from './src/screens/DecideScreen';
 import TasksScreen from './src/screens/TasksScreen';
 import AddTypedTaskScreen from './src/screens/AddTypedTaskScreen';
 import SnapTaskScreen from './src/screens/SnapTaskScreen';
-import OnboardingScreen from './src/screens/OnboardingScreen';
-import TabNavigator from './src/navigation/TabNavigator';
 import NotificationsScreen from './src/screens/NotificationsScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import SnapReviewScreen from './src/screens/SnapReviewScreen';
@@ -26,13 +28,15 @@ import ResetPasswordScreen from './src/screens/ResetPasswordScreen';
 const Stack = createNativeStackNavigator();
 
 // Configure notifications
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
+if (Platform.OS !== 'web') {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    }),
+  });
+}
 
 // Configure deep linking
 const linking = {
@@ -67,17 +71,23 @@ export default function App() {
     };
 
     // Listen for deep links
-    const subscription = Linking.addEventListener('url', handleDeepLink);
+    const subscription = Platform.OS !== 'web' 
+      ? Linking.addEventListener('url', handleDeepLink)
+      : null;
 
     // Get initial URL if app was opened from a link
-    Linking.getInitialURL().then((url) => {
-      if (url) {
-        handleDeepLink({ url });
-      }
-    });
+    if (Platform.OS !== 'web') {
+      Linking.getInitialURL().then((url) => {
+        if (url) {
+          handleDeepLink({ url });
+        }
+      });
+    }
 
     return () => {
-      subscription?.remove();
+      if (subscription) {
+        subscription.remove();
+      }
     };
   }, []);
 
